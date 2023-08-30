@@ -1,9 +1,9 @@
 [hetzner]
 type = sftp
-host = {{ hetzner_host_var }}
-user = {{ hetzner_user_var }}
-#pass = {{ hetzner_password }}
-key_file = {{ hetzner_key_var }}
+host = {{ hetzner_host }}
+user = {{ hetzner_user }}
+pass = {{ hetzner_password }}
+#key_file = {{ hetzner_key }}
 port = 23
 md5sum_command = md5 -r
 sha1sum_command = sha1 -r
