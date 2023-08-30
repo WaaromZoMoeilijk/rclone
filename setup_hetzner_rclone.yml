@@ -65,6 +65,12 @@
         encryption_salt: "{{ obscured_encryption_salt.stdout }}"
 
     # Step 4: Set up systemd service for rclone mount
+    - name: Ensure /mnt/hetzner_encrypted directory exists
+      file:
+        path: /mnt/hetzner_encrypted
+        state: directory
+        mode: '0755'
+        
     - name: Create rclone systemd service
       template:
         src: rclone_mount.service.j2
