@@ -3,7 +3,7 @@
   become: yes
   vars:
     hetzner_user: 'u3632289-sub6'
-    hetzner_host: "{{ hetzner_user}}.your-storagebox.de"
+    hetzner_host: "{{ hetzner_user }}.your-storagebox.de"
     hetzner_password: 'CHANGE' # Secure this using Ansible Vault
     hetzner_key: '~/.ssh/id_rsa'
   tasks:
