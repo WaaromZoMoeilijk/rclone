@@ -1,9 +1,9 @@
 [hetzner]
 type = sftp
-host = {{ hetzner_host }}
-user = {{ hetzner_user }}
-pass = {{ hetzner_password }}
-#key_file = {{ hetzner_key }}
+host = {{ hetzner_host_temlate }}
+user = {{ hetzner_user_template }}
+pass = {{ hetzner_password_template }}
+#key_file = {{ hetzner_key_template }}
 port = 23
 md5sum_command = md5 -r
 sha1sum_command = sha1 -r
@@ -12,6 +12,6 @@ idle_timeout = 0
 
 [hetzner_encrypted]
 type = crypt
-password = {{ encryption_password }}
-password2 = {{ encryption_salt }}
+password = {{ encryption_password_template }}
+password2 = {{ encryption_salt_template }}
 remote = hetzner:
