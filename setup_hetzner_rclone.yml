@@ -16,7 +16,7 @@
 
     - name: Download and install rclone
       when: rclone_installed.rc != 0
-      command: curl https://rclone.org/install.sh | bash
+      shell: curl -sSL https://rclone.org/install.sh | bash
 
     # Step 2: Generate encryption password and salt
     - name: Generate encryption password
