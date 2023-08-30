@@ -4,7 +4,7 @@
   vars:
     hetzner_user: 'u3632289-sub6'
     hetzner_host: "{{ hetzner_user}}.your-storagebox.de"
-    hetzner_password: 'xzKWtJ5YNaAnuJ' # Secure this using Ansible Vault
+    hetzner_password: 'CHANGE' # Secure this using Ansible Vault
     hetzner_key: '~/.ssh/id_rsa'
   tasks:
     # Step 1: Install rclone
@@ -40,17 +40,17 @@
 
     # Step 3: Configure rclone for Hetzner with encryption
     - name: Obscure Hetzner password
-      command: rclone obscure {{ hetzner_password }}
+      command: rclone obscure "{{ hetzner_password }}"
       register: obscured_password
       changed_when: false
 
     - name: Obscure Hetzner encryption password
-      command: rclone obscure {{ encryption_password }}
+      command: rclone obscure "{{ encryption_password.stdout }}"
       register: obscured_encryption_password
       changed_when: false
 
     - name: Obscure Hetzner encryption salt
-      command: rclone obscure {{ encryption_salt }}
+      command: rclone obscure "{{ encryption_salt.stdout }}"
       register: obscured_encryption_salt
       changed_when: false
 
@@ -60,11 +60,11 @@
         dest: "/root/.config/rclone/rclone.conf"
         mode: '0600'
       vars:
-        hetzner_user: "{{ hetzner_user }}"
-        hetzner_host: "{{ hetzner_host }}"
-        hetzner_password: "{{ obscured_password.stdout }}"
-        encryption_password: "{{ obscured_encryption_password }}"
-        encryption_salt: "{{ obscured_encryption_salt }}"
+        hetzner_user_template: "{{ hetzner_user }}"
+        hetzner_host_template: "{{ hetzner_host }}"
+        hetzner_password_template: "{{ obscured_password.stdout }}"
+        encryption_password_template: "{{ obscured_encryption_password.stdout }}"
+        encryption_salt_template: "{{ obscured_encryption_salt.stdout }}"
 
     # Step 4: Set up systemd service for rclone mount
     - name: Ensure /mnt/hetzner_encrypted directory exists
@@ -72,7 +72,7 @@
         path: /mnt/hetzner_encrypted
         state: directory
         mode: '0755'
-        
+
     - name: Create rclone systemd service
       template:
         src: rclone_mount.service.j2
@@ -90,3 +90,4 @@
         name: rclone-mount
         enabled: yes
         state: restarted
+
