@@ -1,0 +1,85 @@
+---
+- hosts: localhost
+  become: yes
+  vars:
+    hetzner_host: 'u3632289-sub6.your-storagebox.de'
+    hetzner_user: 'u3632289-sub6'
+    hetzner_password: 'xzKWtJ5YNaAnuJ' # Secure this using Ansible Vault
+
+  tasks:
+
+    # Step 1: Install rclone
+    - name: Check if rclone is installed
+      command: which rclone
+      register: rclone_installed
+      failed_when: false
+      changed_when: false
+
+    - name: Download and install rclone
+      when: rclone_installed.rc != 0
+      command: curl https://rclone.org/install.sh | bash
+
+    # Step 2: Generate encryption password and salt
+    - name: Generate encryption password
+      command: openssl rand -base64 32
+      register: encryption_password
+      changed_when: false
+      when: rclone_installed.rc != 0
+
+    - name: Generate encryption salt
+      command: openssl rand -base64 32
+      register: encryption_salt
+      changed_when: false
+      when: rclone_installed.rc != 0
+
+    - name: Display encryption password and salt
+      debug:
+        msg:
+          - "Encryption Password: {{ encryption_password.stdout }}"
+          - "Encryption Salt: {{ encryption_salt.stdout }}"
+      when: rclone_installed.rc != 0
+
+    # Step 3: Configure rclone for Hetzner with encryption
+    - name: Obscure Hetzner password
+      command: rclone obscure {{ hetzner_password }}
+      register: obscured_password
+      changed_when: false
+
+    - name: Obscure Hetzner encryption password
+      command: rclone obscure {{ encryption_password }}
+      register: obscured_encryption_password
+      changed_when: false
+
+    - name: Obscure Hetzner encryption salt
+      command: rclone obscure {{ encryption_salt }}
+      register: obscured_encryption_salt
+      changed_when: false      
+
+    - name: Generate rclone configuration
+      template:
+        src: rclone_template.conf.j2
+        dest: "/root/.config/rclone/rclone.conf"
+        mode: '0600'
+      vars:
+        hetzner_obscured_password: "{{ obscured_password.stdout }}"
+        encryption_password: "{{ obscured_encryption_password.stdout }}"
+        encryption_salt: "{{ obscured_encryption_salt.stdout }}"
+
+    # Step 4: Set up systemd service for rclone mount
+    - name: Create rclone systemd service
+      template:
+        src: rclone_mount.service.j2
+        dest: "/etc/systemd/system/rclone-mount.service"
+      notify:
+        - Reload systemd
+        - Enable and start rclone mount
+
+  handlers:
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Enable and start rclone mount
+      systemd:
+        name: rclone-mount
+        enabled: yes
+        state: restarted
