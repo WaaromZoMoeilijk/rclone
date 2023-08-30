@@ -4,7 +4,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/rclone mount hetzner_encrypted: /mnt/hetzner_encrypted --allow-other --config /root/.config/rclone/rclone.conf
+ExecStart=/usr/bin/rclone mount hetzner_encrypted: /mnt/hetzner_encrypted --allow-other --config /root/.config/rclone/rclone.conf --checkers=8
 ExecStop=/bin/fusermount -uz /mnt/hetzner_encrypted
 Restart=always
 RestartSec=10
