@@ -5,9 +5,8 @@
     hetzner_host: 'u3632289-sub6.your-storagebox.de'
     hetzner_user: 'u3632289-sub6'
     hetzner_password: 'xzKWtJ5YNaAnuJ' # Secure this using Ansible Vault
-
+    
   tasks:
-
     # Step 1: Install rclone
     - name: Check if rclone is installed
       command: which rclone
@@ -53,7 +52,7 @@
     - name: Obscure Hetzner encryption salt
       command: rclone obscure {{ encryption_salt }}
       register: obscured_encryption_salt
-      changed_when: false      
+      changed_when: false 
 
     - name: Generate rclone configuration
       template:
@@ -61,7 +60,7 @@
         dest: "/root/.config/rclone/rclone.conf"
         mode: '0600'
       vars:
-        hetzner_obscured_password: "{{ obscured_password.stdout }}"
+        hetzner_password: "{{ obscured_password.stdout }}"
         encryption_password: "{{ obscured_encryption_password.stdout }}"
         encryption_salt: "{{ obscured_encryption_salt.stdout }}"
 
