@@ -2,7 +2,7 @@
 type = sftp
 host = u316989-sub6.your-storagebox.de
 user = u316989-sub6
-#pass = {{ hetzner_obscured_password }}
+#pass = {{ hetzner_password }}
 key_file = /home/ezra/.ssh/id_rsa
 port = 23
 md5sum_command = md5 -r
@@ -12,6 +12,6 @@ idle_timeout = 0
 
 [hetzner_encrypted]
 type = crypt
-password = {{ obscured_encryption_password }}
-password2 = {{ obscured_encryption_salt }}
+password = {{ encryption_password }}
+password2 = {{ encryption_salt }}
 remote = hetzner:
