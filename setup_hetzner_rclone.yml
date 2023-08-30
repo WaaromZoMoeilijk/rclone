@@ -60,6 +60,8 @@
         dest: "/root/.config/rclone/rclone.conf"
         mode: '0600'
       vars:
+        hetzner_user_var: "{{ hetzner_user }}"
+        hetzner_host_var: "{{ hetzner_host }}"
         hetzner_password: "{{ obscured_password.stdout }}"
         encryption_password: "{{ obscured_encryption_password.stdout }}"
         encryption_salt: "{{ obscured_encryption_salt.stdout }}"
