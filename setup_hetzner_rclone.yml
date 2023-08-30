@@ -5,7 +5,7 @@
     hetzner_host: 'u3632289-sub6.your-storagebox.de'
     hetzner_user: 'u3632289-sub6'
     hetzner_password: 'xzKWtJ5YNaAnuJ' # Secure this using Ansible Vault
-    
+    hetzner_key: '~/.ssh/id_rsa'
   tasks:
     # Step 1: Install rclone
     - name: Check if rclone is installed
